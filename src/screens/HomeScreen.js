@@ -1,7 +1,8 @@
 import axios from "axios";
-import { useEffect, useReducer, useState } from "react";
-import { Link } from "react-router-dom";
-// import data from "../data";
+import { useEffect, useReducer } from "react";
+import { Row, Col } from "react-bootstrap";
+import { Helmet } from "react-helmet-async";
+import Product from "../components/Product";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -16,7 +17,7 @@ const reducer = (state, action) => {
   }
 };
 
-//1:20
+//TODO : 2:03
 
 function HomeScreen() {
   //   const [products, setProducts] = useState([]);
@@ -43,24 +44,22 @@ function HomeScreen() {
 
   return (
     <div>
+      <Helmet>
+        <title>Amazon</title>
+      </Helmet>
       <h1>Featured products</h1>
       <div className="products">
-        {products.map((product) => (
-          <div key={product.slug} className="product">
-            <Link to={`/product/${product.slug}`}>
-              <img src={product.image} alt={product.name} />
-            </Link>
-            <div className="product-info">
-              <Link to={`/product/${product.slug}`}>
-                <p>{product.name}</p>
-              </Link>
-              <p>
-                <strong>${product.price}</strong>
-              </p>
-              <button>Add to cart</button>
-            </div>
-          </div>
-        ))}
+        {loading ? (
+          <div>Loading ...</div>
+        ) : (
+          <Row>
+            {products.map((product) => (
+              <Col key={product.slug} sm={6} md={4} lg={3} className="mb-3">
+                <Product product={product} />
+              </Col>
+            ))}
+          </Row>
+        )}
       </div>
     </div>
   );
