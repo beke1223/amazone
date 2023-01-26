@@ -7,6 +7,7 @@ import "./App.css";
 import CartScreen from "./screens/CartScreens";
 import HomeScreen from "./screens/HomeScreen";
 import ProductScreen from "./screens/productscreen";
+import SigninScreen from "./screens/signinScreen";
 import { Store } from "./Store";
 
 function App() {
@@ -43,6 +44,7 @@ function App() {
               <Route path="/product/:slug" element={<ProductScreen />} />
               <Route path="/" element={<HomeScreen />} />
               <Route path="/cart" element={<CartScreen />} />
+              <Route path="/signin" element={<SigninScreen />} />
             </Routes>
           </Container>
         </main>

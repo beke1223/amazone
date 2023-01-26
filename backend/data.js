@@ -1,4 +1,12 @@
 const data = {
+  users: [
+    {
+      name: "Bekalu",
+      email: "admin@bekalu.com",
+      password: "12345",
+    },
+    {},
+  ],
   products: [
     {
       _id: "1",

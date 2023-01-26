@@ -1,5 +1,4 @@
 import { createContext, useReducer } from "react";
-import LoadingBox from "./components/loadingBox";
 
 export const Store = createContext();
 
@@ -40,6 +39,8 @@ function reducer(state, action) {
       localStorage.removeItem("cartItems");
       return { ...state, cart: { ...state.cart, cartItems } };
     }
+    case "USER_SIGNIN":
+      return { ...state, userInfo: action.payload };
     default:
       return state;
   }
