@@ -1,9 +1,13 @@
 import axios from "axios";
-import { useEffect, useReducer } from "react";
+import { useContext, useEffect, useReducer } from "react";
 import { Badge, Button, Card, Col, ListGroup, Row } from "react-bootstrap";
 import { Helmet } from "react-helmet-async";
-import { useParams } from "react-router-dom";
+import { Navigate, useNavigate, useParams } from "react-router-dom";
+import LoadingBox from "../components/loadingBox";
+import MessageBox from "../components/MessageBox";
 import Rating from "../components/rating";
+import { Store } from "../Store";
+import { getError } from "../util";
 
 const reducer = (state, action) => {
   switch (action.type) {
@@ -19,6 +23,7 @@ const reducer = (state, action) => {
 };
 
 function ProductScreen() {
+  const Navigate = useNavigate();
   const params = useParams();
   const { slug } = params;
 
@@ -35,7 +40,7 @@ function ProductScreen() {
         const result = await axios.get(`/api/products/slug/${slug}`);
         dispatch({ type: "FETCH_SUCCESS", payload: result.data });
       } catch (err) {
-        dispatch({ type: "FETCH_FAIL", payload: err.message });
+        dispatch({ type: "FETCH_FAIL", payload: getError(err) });
       }
 
       //   setProducts(result.data);
@@ -43,10 +48,30 @@ function ProductScreen() {
     fetchData();
   }, [slug]);
 
+  const { state, dispatch: cxtDispatch } = useContext(Store);
+  const { cart } = state;
+  const addToCartHandler = async () => {
+    const existItem = cart.cartItems.find((x) => x._id === product._id);
+    const quantity = existItem ? existItem.quantity + 1 : 1;
+    const { data } = await axios.get(`/api/products/${product._id}`);
+
+    if (data.countInStock < quantity) {
+      window.alert("Sorry . Product is out of stock");
+      return;
+    }
+
+    cxtDispatch({
+      type: "CART_ADD_ITEM",
+      payload: { ...product, quantity },
+    });
+
+    Navigate("/cart");
+  };
+
   return loading ? (
-    <div>Loading ...</div>
+    <LoadingBox />
   ) : error ? (
-    <div>{error}</div>
+    <MessageBox variant="danger">{error}</MessageBox>
   ) : (
     <div>
       <Row>
@@ -95,7 +120,9 @@ function ProductScreen() {
                 <ListGroup.Item>
                   {product.countInStock > 0 && (
                     <div className="d-grid">
-                      <Button variant="warning">Add to Cart</Button>
+                      <Button onClick={addToCartHandler} variant="warning">
+                        Add to Cart
+                      </Button>
                     </div>
                   )}
                 </ListGroup.Item>

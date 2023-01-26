@@ -4,10 +4,13 @@ import "bootstrap/dist/css/bootstrap.min.css";
 import "./index.css";
 import App from "./App";
 import { HelmetProvider } from "react-helmet-async";
+import { StorePovider } from "./Store";
 
 const root = ReactDOM.createRoot(document.getElementById("root"));
 root.render(
-  <HelmetProvider>
-    <App />
-  </HelmetProvider>
+  <StorePovider>
+    <HelmetProvider>
+      <App />
+    </HelmetProvider>
+  </StorePovider>
 );
